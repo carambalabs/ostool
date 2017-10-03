@@ -6,6 +6,7 @@ import PackageDescription
 let package = Package(
     name: "ostool",
     dependencies: [
+      .package(url: "git@github.com:kylef/Commander.git", from: "0.7.1"),
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
     ],
