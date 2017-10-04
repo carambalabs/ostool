@@ -31,7 +31,7 @@ fileprivate func createLabels(in repository: String, token: String) -> Observabl
     }
 }
 
-fileprivate func request(path: String, method: String, parameters: [String: String], token: String) -> Observable<Void> {
+fileprivate func request(path: String, method: String, parameters: [String: String], token: String) -> Observable<Any> {
     var url = URL(string: "https://api.github.com/")!
     var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
     components.path = path
@@ -51,8 +51,13 @@ fileprivate func request(path: String, method: String, parameters: [String: Stri
             let urlResponse = response as! HTTPURLResponse
             switch urlResponse.statusCode {
             case 200..<300:
-                observer.onNext(())
-                observer.onCompleted()
+                if let data = data {
+                    let json = try! JSONSerialization.jsonObject(with: data, options: [])
+                    observer.onNext(json)
+                    observer.onCompleted()
+                } else {
+                    observer.onCompleted()
+                }
             default:
                 observer.onError(NSError(domain: "github-api", code: urlResponse.statusCode, userInfo: nil))
             }
